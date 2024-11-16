@@ -86,18 +86,38 @@ API stands for Application Programming Interface. It represents a contract for c
 - Sorting: ```GET /api/users?sort=name,-created_at``` (+) ascending, (-) descending
 - Field Selection: ```GET /api/users?fields=id,name,email```
 
+### Security
+#### Authentication
+- JWT
+    - Stands for JSON Web Token
+    - Stateless Authentication
+    - Consists of 3 parts: Header, Payload, Signature
+    - Tokens are signed to prevent tampering
+    - Flow: Client auths with the server -> server creates JWT with user data -> server sends JWT to client -> client sends JWT with each request -> server validates the JWT signature
+    - Pros
+        - No server storage needed
+        - No DB lookups
+    - Cons
+        - Can't invalidate until the token expires
+        - Each token carries all data
+- Session
+    - Flow: Client auths with the server -> server stores session data in DB -> server sends session id to client (stored in a cookie) -> client sends cookie with each request
+    - Pros
+        - Server must store session data
+        - Can instantly invalidate a session
+    - Cons
+        - Requires DB/cache lookups
+        - Takes server memory
+- JWT vs Sessions
+    - Server Storage: JWT requires no server storage like sessions, but we cannot immediately invalidate the token until it expires
+    - Scalability: JWT is better for horizontal scaling as it's inherently stateless. Sessions require either sticky sessions or shared storage.
+    - Security: We can invaliate sessions immediately. For JWTs, we have to wait until token expiry, JWTs also have token hijacking risks, but sessions have CSRF vulnerabilities with cookies.
+    - Performance: Sessions require a DB/cache lookup for every request, however the cookie size is usually small and it requires less bandwidth per request compared to JWTs.
+
+    Sessions are good when we need immediate invalidation, or our data is sensitive. JWTs are good for distributed systems as they are more horizontally scalable due to their stateless nature.
+
+
 ***
-Topics to cover
-
-Security
-
-Authentication methods
-Authorization (OAuth, JWT, API keys)
-Rate limiting
-CORS
-Input validation
-Security headers
-
 
 Documentation
 
