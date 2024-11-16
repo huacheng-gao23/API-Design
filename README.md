@@ -116,6 +116,36 @@ API stands for Application Programming Interface. It represents a contract for c
 
     Sessions are good when we need immediate invalidation, or our data is sensitive. JWTs are good for distributed systems as they are more horizontally scalable due to their stateless nature.
 
+#### Partial Responses
+We can leverage query parameters to pass in the fields we would like to retrieve from our API. This will give us performance benefits as we only transfer the necessary data, rather than large payloads.
+
+```
+// Without partial response
+// Transfers unnecessary data
+GET /api/users
+{
+  "id": "123",
+  "name": "John",
+  "email": "john@example.com",
+  "address": {...},
+  "preferences": {...},
+  "history": [...],
+  // Many more fields
+}
+
+// With partial response
+// Only transfers needed data
+GET /api/users?fields=id,name
+{
+  "id": "123",
+  "name": "John"
+}
+```
+
+Best Practices
+- Default fields
+- Field validation
+- Error handling
 
 ***
 
